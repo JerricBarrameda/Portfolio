@@ -1,71 +1,48 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./Home";
+// You can create Projects.jsx and Services.jsx similarly
 import Projects from "./Projects";
 import Services from "./Services";
-import Contact from "./Contact";
 
 export default function App() {
-  const [dark, setDark] = useState(false);
+  const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
 
-  // Inject Ko-fi widget script
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://storage.ko-fi.com/cdn/scripts/overlay-widget.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    script.onload = () => {
-      if (window.kofiWidgetOverlay) {
-        window.kofiWidgetOverlay.draw("jerricbarrameda", {
-          type: "floating-chat",
-          "floating-chat.donateButton.text": "Support me",
-          "floating-chat.donateButton.background-color": "#323842",
-          "floating-chat.donateButton.text-color": "#fff",
-        });
-      }
-    };
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
   return (
-    <div className={dark ? "dark" : ""}>
-      <Router>
-        {/* Top Navigation Bar */}
-        <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto flex justify-center p-4 space-x-6">
-            <Link to="/" className="text-blue-600 dark:text-blue-400 hover:text-blue-500">Home</Link>
-            <Link to="/projects" className="text-blue-600 dark:text-blue-400 hover:text-blue-500">Projects</Link>
-            <Link to="/services" className="text-blue-600 dark:text-blue-400 hover:text-blue-500">Services</Link>
-            <Link to="/contact" className="text-blue-600 dark:text-blue-400 hover:text-blue-500">Contact</Link>
-          </div>
-        </header>
+    <Router>
+      {/* Navigation Bar */}
+      <nav className="w-full bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-center gap-8 sticky top-0 z-50">
+        <Link className="text-gray-800 dark:text-white hover:text-blue-500" to="/">Home</Link>
+        <Link className="text-gray-800 dark:text-white hover:text-blue-500" to="/projects">Projects</Link>
+        <Link className="text-gray-800 dark:text-white hover:text-blue-500" to="/services">Services</Link>
+      </nav>
 
-        {/* Routes */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
+      {/* Routes */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/services" element={<Services />} />
+      </Routes>
 
-        {/* Bottom Controls */}
-        <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end space-y-2">
-          {/* Dark/Light Mode Switch */}
-          <button
-            onClick={() => setDark(!dark)}
-            className={`w-12 h-6 rounded-full relative transition-colors ${dark ? "bg-gray-600" : "bg-blue-600"}`}
-          >
-            <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform ${dark ? "translate-x-6" : "translate-x-0"}`}
-            ></span>
-          </button>
-          {/* Ko-fi widget will appear automatically */}
-        </div>
-      </Router>
-    </div>
+      {/* Dark/Light Mode Switch */}
+      <div className="fixed bottom-4 right-4">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-4 py-2 rounded-full shadow-md"
+        >
+          {darkMode ? "☀️" : "🌙"}
+        </button>
+      </div>
+    </Router>
   );
 }

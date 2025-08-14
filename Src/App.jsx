@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./Home";
-// You can create Projects.jsx and Services.jsx similarly
 import Projects from "./Projects";
 import Services from "./Services";
 
